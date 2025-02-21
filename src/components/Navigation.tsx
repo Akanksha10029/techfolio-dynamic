@@ -18,7 +18,8 @@ const Navigation = () => {
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed left-4 top-4 z-50 rounded-full bg-secondary p-2 lg:hidden"
+        className="fixed left-4 top-4 z-50 rounded-full bg-secondary p-2 transition-transform duration-300 hover:scale-110 lg:hidden"
+        aria-label="Toggle navigation"
       >
         <Menu className="h-6 w-6" />
       </button>
@@ -30,7 +31,7 @@ const Navigation = () => {
       >
         <div className="flex h-full flex-col justify-center">
           <div className="space-y-8">
-            <div className="mb-8">
+            <div className="mb-8 mt-16 lg:mt-0">
               <h2 className="text-2xl font-bold text-primary">Portfolio</h2>
             </div>
             <ul className="space-y-4">
@@ -41,6 +42,7 @@ const Navigation = () => {
                     className={`nav-item rotate-hover ${
                       location.pathname === item.path ? "active" : ""
                     }`}
+                    onClick={() => setIsOpen(false)}
                   >
                     {item.icon}
                     <span>{item.label}</span>

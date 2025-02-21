@@ -107,7 +107,7 @@ const Projects = () => {
               Add Project
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Add New Project</DialogTitle>
             </DialogHeader>
@@ -155,14 +155,14 @@ const Projects = () => {
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
-          <div key={project.id} className="relative group">
+          <div key={project.id} className="group relative">
             <ProjectCard project={project} />
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
                   variant="destructive"
                   size="icon"
-                  className="absolute -right-2 -top-2 opacity-0 transition-opacity group-hover:opacity-100"
+                  className="absolute -right-2 -top-2 scale-100 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

@@ -19,7 +19,7 @@ interface ProjectCardProps {
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
   return (
-    <Card className="glass-card group overflow-hidden transition-all duration-300 hover:scale-105">
+    <Card className="glass-card group h-full overflow-hidden transition-all duration-300 hover:scale-105">
       <CardHeader className="p-0">
         <div className="relative aspect-video overflow-hidden">
           <img
@@ -29,27 +29,29 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           />
         </div>
       </CardHeader>
-      <CardContent className="p-6">
+      <CardContent className="flex h-[calc(100%-12rem)] min-h-[16rem] flex-col p-6">
         <CardTitle className="mb-2 text-xl">{project.title}</CardTitle>
-        <CardDescription className="mb-4">{project.description}</CardDescription>
-        <div className="mb-4 flex flex-wrap gap-2">
-          {project.technologies.map((tech) => (
-            <Badge key={tech} variant="secondary">
-              {tech}
-            </Badge>
-          ))}
+        <CardDescription className="mb-4 flex-grow">{project.description}</CardDescription>
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-2">
+            {project.technologies.map((tech) => (
+              <Badge key={tech} variant="secondary">
+                {tech}
+              </Badge>
+            ))}
+          </div>
+          {project.link && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="w-full"
+              onClick={() => window.open(project.link, "_blank")}
+            >
+              <Github className="mr-2 h-4 w-4" />
+              View on GitHub
+            </Button>
+          )}
         </div>
-        {project.link && (
-          <Button
-            variant="secondary"
-            size="sm"
-            className="w-full"
-            onClick={() => window.open(project.link, "_blank")}
-          >
-            <Github className="mr-2 h-4 w-4" />
-            View on GitHub
-          </Button>
-        )}
       </CardContent>
     </Card>
   );
