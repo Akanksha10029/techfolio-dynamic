@@ -24,16 +24,16 @@ const Navigation = () => {
       </button>
 
       <nav
-        className={`fixed left-0 top-0 z-40 h-full w-64 transform bg-background/95 p-6 backdrop-blur-lg transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed left-0 top-0 z-40 flex h-full w-64 transform flex-col justify-center bg-background/95 p-6 backdrop-blur-lg transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-full flex-col justify-between">
+        <div className="flex h-full flex-col justify-center">
           <div className="space-y-8">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-primary">Portfolio</h2>
             </div>
-            <ul className="space-y-2">
+            <ul className="space-y-4">
               {navItems.map((item) => (
                 <li key={item.path}>
                   <Link
@@ -49,11 +49,11 @@ const Navigation = () => {
               ))}
             </ul>
           </div>
-          <div className="glass-card p-4">
-            <p className="text-sm text-muted-foreground">
-              © 2024 Portfolio. All rights reserved.
-            </p>
-          </div>
+        </div>
+        <div className="glass-card mt-auto p-4">
+          <p className="text-sm text-muted-foreground">
+            © 2024 Portfolio. All rights reserved.
+          </p>
         </div>
       </nav>
     </>

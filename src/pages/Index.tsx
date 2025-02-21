@@ -7,10 +7,14 @@ const Index = () => {
   return (
     <div className="flex min-h-screen items-center justify-center px-6 lg:px-20">
       <div className="animate-fadeIn space-y-6 text-center">
-        <h1 className="text-4xl font-bold leading-tight md:text-6xl lg:text-7xl">
-          Hi, I'm <span className="text-primary">Your Name</span>
+        <h1 className="space-y-2 text-4xl font-bold leading-tight md:text-6xl lg:text-7xl">
+          <div className="typewriter inline-block">
+            Hi, I'm <span className="text-primary">Your Name</span>
+          </div>
           <br />
-          Full Stack Developer
+          <div className="typewriter inline-block" style={{ animationDelay: "4s" }}>
+            Full Stack Developer
+          </div>
         </h1>
         <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
           I craft beautiful, functional websites and applications using modern technologies.
