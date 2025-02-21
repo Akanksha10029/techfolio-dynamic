@@ -97,7 +97,7 @@ const Projects = () => {
   };
 
   return (
-    <div className="min-h-screen animate-fadeIn space-y-8 p-6 lg:p-20">
+    <div className="min-h-screen animate-fadeIn p-6 pt-20 lg:p-20">
       <div className="flex items-center justify-between">
         <h1 className="text-4xl font-bold">Projects</h1>
         <Dialog>
@@ -162,7 +162,7 @@ const Projects = () => {
                 <Button
                   variant="destructive"
                   size="icon"
-                  className="absolute -right-2 -top-2 scale-100 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100"
+                  className="absolute right-2 top-2 z-10 scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

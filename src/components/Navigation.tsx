@@ -16,13 +16,15 @@ const Navigation = () => {
 
   return (
     <>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed left-4 top-4 z-50 rounded-full bg-secondary p-2 transition-transform duration-300 hover:scale-110 lg:hidden"
-        aria-label="Toggle navigation"
-      >
-        <Menu className="h-6 w-6" />
-      </button>
+      <div className="fixed left-0 top-0 z-50 flex h-16 w-full items-center bg-background/80 px-4 backdrop-blur-sm lg:hidden">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="rounded-full bg-secondary p-2 transition-transform duration-300 hover:scale-110"
+          aria-label="Toggle navigation"
+        >
+          <Menu className="h-6 w-6" />
+        </button>
+      </div>
 
       <nav
         className={`fixed left-0 top-0 z-40 flex h-full w-64 transform flex-col justify-center bg-background/95 p-6 backdrop-blur-lg transition-transform duration-300 ease-in-out lg:translate-x-0 ${
