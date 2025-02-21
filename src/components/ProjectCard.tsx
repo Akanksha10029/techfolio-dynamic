@@ -1,6 +1,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Github } from "lucide-react";
 
 export interface Project {
   id: string;
@@ -30,13 +32,24 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
       <CardContent className="p-6">
         <CardTitle className="mb-2 text-xl">{project.title}</CardTitle>
         <CardDescription className="mb-4">{project.description}</CardDescription>
-        <div className="flex flex-wrap gap-2">
+        <div className="mb-4 flex flex-wrap gap-2">
           {project.technologies.map((tech) => (
             <Badge key={tech} variant="secondary">
               {tech}
             </Badge>
           ))}
         </div>
+        {project.link && (
+          <Button
+            variant="secondary"
+            size="sm"
+            className="w-full"
+            onClick={() => window.open(project.link, "_blank")}
+          >
+            <Github className="mr-2 h-4 w-4" />
+            View on GitHub
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
