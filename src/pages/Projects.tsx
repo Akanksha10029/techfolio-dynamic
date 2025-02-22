@@ -1,6 +1,6 @@
 
 import ProjectCard, { Project } from "@/components/ProjectCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Trash2 } from "lucide-react";
 import {
@@ -26,28 +26,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-
-const initialProjects: Project[] = [
-  {
-    id: "1",
-    title: "E-commerce Platform",
-    description: "A modern e-commerce platform built with React and Node.js",
-    technologies: ["React", "Node.js", "PostgreSQL"],
-    imageUrl: "/placeholder.svg",
-    link: "#",
-  },
-  {
-    id: "2",
-    title: "Task Management App",
-    description: "A collaborative task management application",
-    technologies: ["Next.js", "TypeScript", "TailwindCSS"],
-    imageUrl: "/placeholder.svg",
-    link: "#",
-  },
-];
+import { supabase } from "@/lib/supabase";
 
 const Projects = () => {
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [newProject, setNewProject] = useState({
     title: "",
     description: "",
@@ -55,6 +37,37 @@ const Projects = () => {
     link: "",
     imageUrl: "/placeholder.svg",
   });
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      const formattedProjects = data.map(project => ({
+        id: project.id,
+        title: project.title,
+        description: project.description,
+        technologies: project.technologies,
+        imageUrl: project.image_url,
+        link: project.link
+      }));
+
+      setProjects(formattedProjects);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      toast.error('Failed to load projects');
+    }
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -65,35 +78,71 @@ const Projects = () => {
     });
   };
 
-  const addProject = () => {
+  const addProject = async () => {
     if (!newProject.title || !newProject.description || !newProject.technologies) {
-      toast.error("Please fill in all fields");
+      toast.error("Please fill in all required fields");
       return;
     }
 
-    const projectToAdd: Project = {
-      id: String(projects.length + 1),
-      title: newProject.title,
-      description: newProject.description,
-      technologies: newProject.technologies.split(",").map((tech) => tech.trim()),
-      imageUrl: newProject.imageUrl,
-      link: newProject.link,
-    };
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .insert([
+          {
+            title: newProject.title,
+            description: newProject.description,
+            technologies: newProject.technologies.split(',').map(tech => tech.trim()),
+            image_url: newProject.imageUrl,
+            link: newProject.link
+          }
+        ])
+        .select()
+        .single();
 
-    setProjects([...projects, projectToAdd]);
-    setNewProject({
-      title: "",
-      description: "",
-      technologies: "",
-      link: "",
-      imageUrl: "/placeholder.svg",
-    });
-    toast.success("Project added successfully!");
+      if (error) throw error;
+
+      setProjects([
+        {
+          id: data.id,
+          title: data.title,
+          description: data.description,
+          technologies: data.technologies,
+          imageUrl: data.image_url,
+          link: data.link
+        },
+        ...projects
+      ]);
+
+      setNewProject({
+        title: "",
+        description: "",
+        technologies: "",
+        link: "",
+        imageUrl: "/placeholder.svg",
+      });
+
+      toast.success("Project added successfully!");
+    } catch (error) {
+      console.error('Error adding project:', error);
+      toast.error('Failed to add project');
+    }
   };
 
-  const deleteProject = (id: string) => {
-    setProjects(projects.filter((project) => project.id !== id));
-    toast.success("Project deleted successfully!");
+  const deleteProject = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setProjects(projects.filter((project) => project.id !== id));
+      toast.success("Project deleted successfully!");
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      toast.error('Failed to delete project');
+    }
   };
 
   return (
