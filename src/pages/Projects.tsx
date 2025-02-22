@@ -98,8 +98,8 @@ const Projects = () => {
 
   return (
     <div className="min-h-screen animate-fadeIn p-6 pt-20 lg:p-20">
-      <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-bold" pb-10>Projects</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-4xl font-bold">Projects</h1>
         <Dialog>
           <DialogTrigger asChild>
             <Button className="group">

@@ -12,7 +12,7 @@ const Index = () => {
             Hi, I'm <span className="text-primary">Your Name</span>
           </div>
           <br />
-          <div className="typewriter inline-block" style={{ animationDelay: "4s" }}>
+          <div className="typewriter inline-block" style={{ animationDelay: "2.5s" }}>
             Full Stack Developer
           </div>
         </h1>
