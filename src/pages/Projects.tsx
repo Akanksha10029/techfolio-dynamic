@@ -45,7 +45,7 @@ const Projects = () => {
   const fetchProjects = async () => {
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from('porfolio projects')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -54,12 +54,12 @@ const Projects = () => {
       }
 
       const formattedProjects = data.map(project => ({
-        id: project.id,
-        title: project.title,
-        description: project.description,
-        technologies: project.technologies,
-        imageUrl: project.image_url,
-        link: project.link
+        id: String(project.id), // Convert number to string for frontend
+        title: project.description || "", // Using description as title since there's no title column
+        description: project.description || "",
+        technologies: project["technologies used"] ? project["technologies used"].split(',') : [],
+        imageUrl: "/placeholder.svg", // Using placeholder since there's no image column
+        link: project["github link"] || ""
       }));
 
       setProjects(formattedProjects);
@@ -86,14 +86,12 @@ const Projects = () => {
 
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from('porfolio projects')
         .insert([
           {
-            title: newProject.title,
             description: newProject.description,
-            technologies: newProject.technologies.split(',').map(tech => tech.trim()),
-            image_url: newProject.imageUrl,
-            link: newProject.link
+            "technologies used": newProject.technologies,
+            "github link": newProject.link
           }
         ])
         .select()
@@ -101,17 +99,19 @@ const Projects = () => {
 
       if (error) throw error;
 
-      setProjects([
-        {
-          id: data.id,
-          title: data.title,
-          description: data.description,
-          technologies: data.technologies,
-          imageUrl: data.image_url,
-          link: data.link
-        },
-        ...projects
-      ]);
+      if (data) {
+        setProjects([
+          {
+            id: String(data.id),
+            title: data.description || "",
+            description: data.description || "",
+            technologies: data["technologies used"] ? data["technologies used"].split(',') : [],
+            imageUrl: "/placeholder.svg",
+            link: data["github link"] || ""
+          },
+          ...projects
+        ]);
+      }
 
       setNewProject({
         title: "",
@@ -131,9 +131,9 @@ const Projects = () => {
   const deleteProject = async (id: string) => {
     try {
       const { error } = await supabase
-        .from('projects')
+        .from('porfolio projects')
         .delete()
-        .eq('id', id);
+        .eq('id', parseInt(id)); // Convert string ID back to number for database
 
       if (error) throw error;
 
