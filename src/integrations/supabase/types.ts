@@ -15,6 +15,7 @@ export type Database = {
           description: string | null
           "github link": string | null
           id: number
+          image_url: string | null
           "technologies used": string | null
         }
         Insert: {
@@ -22,6 +23,7 @@ export type Database = {
           description?: string | null
           "github link"?: string | null
           id?: number
+          image_url?: string | null
           "technologies used"?: string | null
         }
         Update: {
@@ -29,6 +31,7 @@ export type Database = {
           description?: string | null
           "github link"?: string | null
           id?: number
+          image_url?: string | null
           "technologies used"?: string | null
         }
         Relationships: []

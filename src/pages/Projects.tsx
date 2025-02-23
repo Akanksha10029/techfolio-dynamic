@@ -2,7 +2,7 @@
 import ProjectCard, { Project } from "@/components/ProjectCard";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2, Upload } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -37,6 +37,8 @@ const Projects = () => {
     link: "",
     imageUrl: "/placeholder.svg",
   });
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -54,11 +56,11 @@ const Projects = () => {
       }
 
       const formattedProjects = data.map(project => ({
-        id: String(project.id), // Convert number to string for frontend
-        title: project.description || "", // Using description as title since there's no title column
+        id: String(project.id),
+        title: project.description || "",
         description: project.description || "",
         technologies: project["technologies used"] ? project["technologies used"].split(',') : [],
-        imageUrl: "/placeholder.svg", // Using placeholder since there's no image column
+        imageUrl: project.image_url || "/placeholder.svg",
         link: project["github link"] || ""
       }));
 
@@ -78,20 +80,53 @@ const Projects = () => {
     });
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedImage(e.target.files[0]);
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const filePath = `${crypto.randomUUID()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('project-images')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    const { data } = supabase.storage
+      .from('project-images')
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+  };
+
   const addProject = async () => {
     if (!newProject.title || !newProject.description || !newProject.technologies) {
       toast.error("Please fill in all required fields");
       return;
     }
 
+    setIsUploading(true);
     try {
+      let imageUrl = "/placeholder.svg";
+      
+      if (selectedImage) {
+        imageUrl = await uploadImage(selectedImage);
+      }
+
       const { data, error } = await supabase
         .from('porfolio projects')
         .insert([
           {
             description: newProject.description,
             "technologies used": newProject.technologies,
-            "github link": newProject.link
+            "github link": newProject.link,
+            image_url: imageUrl
           }
         ])
         .select()
@@ -106,7 +141,7 @@ const Projects = () => {
             title: data.description || "",
             description: data.description || "",
             technologies: data["technologies used"] ? data["technologies used"].split(',') : [],
-            imageUrl: "/placeholder.svg",
+            imageUrl: data.image_url || "/placeholder.svg",
             link: data["github link"] || ""
           },
           ...projects
@@ -120,11 +155,13 @@ const Projects = () => {
         link: "",
         imageUrl: "/placeholder.svg",
       });
-
+      setSelectedImage(null);
       toast.success("Project added successfully!");
     } catch (error) {
       console.error('Error adding project:', error);
       toast.error('Failed to add project');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -133,7 +170,7 @@ const Projects = () => {
       const { error } = await supabase
         .from('porfolio projects')
         .delete()
-        .eq('id', parseInt(id)); // Convert string ID back to number for database
+        .eq('id', parseInt(id));
 
       if (error) throw error;
 
@@ -193,10 +230,32 @@ const Projects = () => {
                   onChange={handleInputChange}
                 />
               </div>
+              <div className="space-y-2">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="cursor-pointer"
+                />
+                {selectedImage && (
+                  <p className="text-sm text-muted-foreground">
+                    Selected: {selectedImage.name}
+                  </p>
+                )}
+              </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button onClick={addProject}>Add Project</Button>
+                <Button onClick={addProject} disabled={isUploading}>
+                  {isUploading ? (
+                    <>
+                      <Upload className="mr-2 h-4 w-4 animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    'Add Project'
+                  )}
+                </Button>
               </DialogClose>
             </DialogFooter>
           </DialogContent>
