@@ -2,8 +2,38 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import ProjectCard, { Project } from "@/components/ProjectCard";
+import { supabase } from "@/lib/supabase";
 
 const Index = () => {
+  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
+
+  useEffect(() => {
+    const fetchFeaturedProjects = async () => {
+      const { data, error } = await supabase
+        .from('porfolio projects')
+        .select('*')
+        .eq('featured', true)
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        const formattedProjects = data.map(project => ({
+          id: String(project.id),
+          title: project.description || "",
+          description: project.description || "",
+          technologies: project["technologies used"] ? project["technologies used"].split(',') : [],
+          imageUrl: project.image_url || "/placeholder.svg",
+          link: project["github link"] || "",
+          featured: true
+        }));
+        setFeaturedProjects(formattedProjects);
+      }
+    };
+
+    fetchFeaturedProjects();
+  }, []);
+
   return (
     <div className="min-h-screen animate-fadeIn space-y-20 p-6 pt-20 lg:p-20">
       <div className="flex min-h-[70vh] items-center justify-center">
@@ -47,6 +77,11 @@ const Index = () => {
           <p className="text-lg text-muted-foreground">
             Here are some of my recent works
           </p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {featuredProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
         </div>
       </div>
     </div>

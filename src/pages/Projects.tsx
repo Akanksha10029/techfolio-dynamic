@@ -1,4 +1,3 @@
-
 import ProjectCard, { Project } from "@/components/ProjectCard";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -61,13 +60,42 @@ const Projects = () => {
         description: project.description || "",
         technologies: project["technologies used"] ? project["technologies used"].split(',') : [],
         imageUrl: project.image_url || "/placeholder.svg",
-        link: project["github link"] || ""
+        link: project["github link"] || "",
+        featured: project.featured || false
       }));
 
       setProjects(formattedProjects);
     } catch (error) {
       console.error('Error fetching projects:', error);
       toast.error('Failed to load projects');
+    }
+  };
+
+  const handleToggleFeature = async (projectId: string, featured: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('porfolio projects')
+        .update({ featured })
+        .eq('id', parseInt(projectId));
+
+      if (error) {
+        if (error.message.includes('Cannot feature more than 3 projects')) {
+          toast.error('You can only feature up to 3 projects');
+          return;
+        }
+        throw error;
+      }
+
+      setProjects(projects.map(project => 
+        project.id === projectId ? { ...project, featured } : project
+      ));
+
+      toast.success(
+        featured ? "Project added to featured" : "Project removed from featured"
+      );
+    } catch (error) {
+      console.error('Error updating project:', error);
+      toast.error('Failed to update project');
     }
   };
 
@@ -126,7 +154,8 @@ const Projects = () => {
             description: newProject.description,
             "technologies used": newProject.technologies,
             "github link": newProject.link,
-            image_url: imageUrl
+            image_url: imageUrl,
+            featured: false
           }
         ])
         .select()
@@ -142,7 +171,8 @@ const Projects = () => {
             description: data.description || "",
             technologies: data["technologies used"] ? data["technologies used"].split(',') : [],
             imageUrl: data.image_url || "/placeholder.svg",
-            link: data["github link"] || ""
+            link: data["github link"] || "",
+            featured: data.featured || false
           },
           ...projects
         ]);
@@ -264,7 +294,10 @@ const Projects = () => {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <div key={project.id} className="group relative">
-            <ProjectCard project={project} />
+            <ProjectCard 
+              project={project} 
+              onToggleFeature={handleToggleFeature}
+            />
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button

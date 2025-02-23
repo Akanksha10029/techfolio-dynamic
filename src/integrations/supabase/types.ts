@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          featured: boolean | null
           "github link": string | null
           id: number
           image_url: string | null
@@ -21,6 +22,7 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
+          featured?: boolean | null
           "github link"?: string | null
           id?: number
           image_url?: string | null
@@ -29,6 +31,7 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
+          featured?: boolean | null
           "github link"?: string | null
           id?: number
           image_url?: string | null
