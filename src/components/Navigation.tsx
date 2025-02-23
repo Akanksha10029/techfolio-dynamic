@@ -1,11 +1,14 @@
 
-import { Home, User, Briefcase, Mail, Menu } from "lucide-react";
+import { Home, User, Briefcase, Mail, Menu, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { session, signOut } = useAuth();
 
   const navItems = [
     { path: "/", icon: <Home className="h-5 w-5" />, label: "Home" },
@@ -55,9 +58,20 @@ const Navigation = () => {
           </div>
         </div>
         <div className="glass-card mt-auto p-4">
-          <p className="text-sm text-muted-foreground">
-            © 2024 Portfolio. All rights reserved.
-          </p>
+          {session ? (
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={signOut}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              © 2024 Portfolio. All rights reserved.
+            </p>
+          )}
         </div>
       </nav>
     </>
