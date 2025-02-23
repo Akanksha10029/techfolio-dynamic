@@ -1,5 +1,5 @@
 
-import { Home, User, Briefcase, Mail, Menu, LogOut } from "lucide-react";
+import { Home, User, Briefcase, Mail, Menu, LogOut, LogIn } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -68,9 +68,21 @@ const Navigation = () => {
               Logout
             </Button>
           ) : (
-            <p className="text-sm text-muted-foreground">
-              © 2024 Portfolio. All rights reserved.
-            </p>
+            <div className="space-y-4">
+              <Button
+                variant="outline"
+                className="w-full"
+                asChild
+              >
+                <Link to="/auth">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Login as Admin
+                </Link>
+              </Button>
+              <p className="text-sm text-muted-foreground text-center">
+                © 2024 Portfolio. All rights reserved.
+              </p>
+            </div>
           )}
         </div>
       </nav>
