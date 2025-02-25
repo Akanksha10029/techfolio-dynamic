@@ -2,7 +2,8 @@
 
 ## Project info
 
-**URL**: https://techfolio-dynamic.lovable.app/
+**URL**: [https://preview-0a28710f--techfolio-dynamic.lovable.app/](https://preview--techfolio-dynamic.lovable.app/)
+
 ## How can I edit this code?
 
 There are several ways of editing your application.

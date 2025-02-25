@@ -308,9 +308,9 @@ const Projects = () => {
                   <Button
                     variant="destructive"
                     size="icon"
-                    className="delete-btn absolute right-2 top-2 z-10 scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100"
+                    className="absolute right-2 top-2 z-10 scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100"
                   >
-                    <Trash2 className="delete-icon h-4 w-4 transition-transform duration-300" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
