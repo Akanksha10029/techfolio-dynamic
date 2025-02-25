@@ -1,4 +1,3 @@
-
 import { ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -31,17 +30,19 @@ const Index = () => {
     
     window.addEventListener('beforeunload', handleBeforeUnload);
     
-    // Check and show welcome message
-    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-    if (!hasSeenWelcome) {
-      setShowAdminCheck(true);
-      localStorage.setItem('hasSeenWelcome', 'true');
+    // Check and show welcome message only if user is not logged in
+    if (!session) {
+      const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+      if (!hasSeenWelcome) {
+        setShowAdminCheck(true);
+        localStorage.setItem('hasSeenWelcome', 'true');
+      }
     }
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     const fetchFeaturedProjects = async () => {
