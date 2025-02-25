@@ -1,21 +1,8 @@
-
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-
-const skills = [
-  "React",
-  "TypeScript",
-  "Node.js",
-  "Next.js",
-  "TailwindCSS",
-  "PostgreSQL",
-  "GraphQL",
-  "Docker",
-];
-
+const skills = ["React", "TypeScript", "Node.js", "Next.js", "TailwindCSS", "PostgreSQL", "GraphQL", "Docker"];
 const About = () => {
-  return (
-    <div className="min-h-screen animate-fadeIn space-y-12 p-6 lg:p-20">
+  return <div className="min-h-screen animate-fadeIn space-y-12 p-6 lg:p-20 mx-[7px] my-[62px] px-[29px]">
       <section className="space-y-6">
         <h1 className="text-4xl font-bold">About Me</h1>
         <div className="glass-card max-w-3xl space-y-4 p-6">
@@ -35,11 +22,9 @@ const About = () => {
       <section className="space-y-6">
         <h2 className="text-2xl font-bold">Skills & Technologies</h2>
         <div className="flex flex-wrap gap-2">
-          {skills.map((skill) => (
-            <Badge key={skill} variant="secondary" className="text-base">
+          {skills.map(skill => <Badge key={skill} variant="secondary" className="text-base">
               {skill}
-            </Badge>
-          ))}
+            </Badge>)}
         </div>
       </section>
 
@@ -67,8 +52,6 @@ const About = () => {
           </Card>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default About;
