@@ -37,7 +37,7 @@
 }
 
 .nav-item {
-  @apply relative flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-200 hover:text-primary;
+  @apply relative flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300 hover:text-primary;
 }
 
 .nav-item.active {
@@ -54,34 +54,54 @@
 }
 
 .glass-card {
-  @apply rounded-lg border border-white/10 bg-white/5 backdrop-blur-sm;
+  @apply rounded-lg border border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:bg-white/10;
 }
 
-.rotate-hover:hover {
-  animation: rotate360 0.5s ease-in-out;
+@keyframes rotate360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+.delete-btn {
+  @apply relative overflow-hidden transition-all duration-300 hover:bg-destructive/90;
+}
+
+.delete-btn::before {
+  content: '';
+  @apply absolute inset-0 bg-destructive/20 opacity-0 transition-opacity duration-300;
+}
+
+.delete-btn:hover::before {
+  @apply opacity-100;
+}
+
+.delete-btn:hover .delete-icon {
+  animation: shake 0.5s ease-in-out;
 }
 
 @keyframes typewriter {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
+  from { width: 0; }
+  to { width: 100%; }
 }
 
 @keyframes blink {
-  50% {
-    border-color: transparent;
-  }
+  50% { border-color: transparent; }
 }
 
 .typewriter {
   overflow: hidden;
   white-space: nowrap;
   border-right: 3px solid var(--primary);
-  animation: typewriter 2s steps(40) 0.5s forwards,
-             blink 1s steps(1) infinite;
 }
 
 .page-enter {
@@ -98,3 +118,4 @@
     transform: perspective(1000px) rotateY(0deg);
   }
 }
+

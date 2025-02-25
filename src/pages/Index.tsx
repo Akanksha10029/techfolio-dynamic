@@ -1,4 +1,3 @@
-
 import { ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,17 +18,9 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
-  const [showAdminCheck, setShowAdminCheck] = useState(false);
+  const [showAdminCheck, setShowAdminCheck] = useState(true);
   const navigate = useNavigate();
   const { session } = useAuth();
-
-  useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-    if (!hasSeenWelcome) {
-      setShowAdminCheck(true);
-      localStorage.setItem('hasSeenWelcome', 'true');
-    }
-  }, []);
 
   useEffect(() => {
     const fetchFeaturedProjects = async () => {
