@@ -19,14 +19,14 @@ const Contact = () => {
               <Mail className="h-6 w-6 text-primary" />
               <div>
                 <h3 className="font-medium">Email</h3>
-                <p className="text-muted-foreground">your.email@example.com</p>
+                <p className="text-muted-foreground">akanksha12016@gmail.com</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <MapPin className="h-6 w-6 text-primary" />
               <div>
                 <h3 className="font-medium">Location</h3>
-                <p className="text-muted-foreground">City, Country</p>
+                <p className="text-muted-foreground">Ambala(Haryana), India</p>
               </div>
             </div>
           </div>
@@ -35,13 +35,13 @@ const Contact = () => {
             <h3 className="mb-4 font-medium">Connect with me</h3>
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://github.com/Akanksha10029"
                 className="rounded-full bg-secondary p-2 transition-colors hover:bg-primary"
               >
                 <Github className="h-6 w-6" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/in/akanksha-rani-582294249/"
                 className="rounded-full bg-secondary p-2 transition-colors hover:bg-primary"
               >
                 <Linkedin className="h-6 w-6" />
