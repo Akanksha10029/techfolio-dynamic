@@ -101,19 +101,13 @@ const Index = () => {
         <div className="flex min-h-[70vh] items-center justify-center">
           <div className="space-y-6 text-center">
             <h1 className="space-y-2 text-4xl font-bold leading-tight md:text-6xl lg:text-7xl">
-              <div className="typewriter inline-block" style={{ 
-                animation: "typing 2s steps(20, end), blink 0.5s step-end infinite",
-                animationDelay: "0.5s"
-              }}>
-                Hi, I'm <span className="text-primary">Your Name</span>
-              </div>
-              <br />
-              <div className="typewriter inline-block" style={{ 
-                animation: "typing 2s steps(20, end), blink 0.5s step-end infinite",
-                animationDelay: "2.5s"
-              }}>
-                Full Stack Developer
-              </div>
+            <div className="typewriter">
+              Hi, I'm <span className="text-primary">Akanksha Rani</span>
+            </div>
+            <br />
+            <div className="typewriter delay">
+              Full Stack Developer
+            </div>
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
               I craft beautiful, functional websites and applications using modern technologies.
