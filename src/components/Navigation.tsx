@@ -29,7 +29,7 @@ const Navigation = () => {
     label: "Contact"
   }];
   return <>
-      <div className="fixed left-0 top-0 z-50 flex h-16 w-full items-center backdrop-blur-sm lg:hidden my-[9px] py-[19px] px-0 mx-[25px] bg-black">
+      <div className="fixed left-0 top-0 z-50 flex h-16 w-full items-center backdrop-blur-sm lg:hidden my-[9px] py-[19px] bg-black mx-0 px-[33px]">
         <button onClick={() => setIsOpen(!isOpen)} className="rounded-full bg-secondary p-2 transition-transform duration-300 hover:scale-110" aria-label="Toggle navigation">
           <Menu className="h-6 w-6" />
         </button>
