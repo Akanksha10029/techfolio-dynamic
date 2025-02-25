@@ -70,17 +70,38 @@
   }
 }
 
+@keyframes typing {
+  0% { width: 0; }
+  50% { width: 100%; }
+  60% { width: 100%; }
+  100% { width: 0; }
+}
+
 @keyframes blink {
   50% {
     border-color: transparent;
   }
 }
 
-.typewriter {
+/* Container to ensure proper visibility */
+.typewriter-container {
+  display: inline-block;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.typewriter {
+  display: inline-block;
+  overflow: hidden;
+  /* white-space: nowrap; */
+  width: 0;
   border-right: 3px solid var(--primary);
   animation: typing 3s steps(20, end) infinite, blink 0.5s step-end infinite;
+}
+
+/* Delay for the second line */
+.typewriter.delay {
+  animation-delay: 2s;
 }
 
 .page-enter {

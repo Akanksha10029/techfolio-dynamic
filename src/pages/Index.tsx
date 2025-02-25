@@ -101,12 +101,12 @@ const Index = () => {
         <div className="flex min-h-[70vh] items-center justify-center">
           <div className="space-y-6 text-center">
             <h1 className="space-y-2 text-4xl font-bold leading-tight md:text-6xl lg:text-7xl">
-            <div className="typewriter">
-              Hi, I'm <span className="text-primary">Akanksha Rani</span>
+            <div className="typewriter-container">
+              <span className="typewriter">Hi, I'm <span className="text-primary">Akanksha Rani</span></span>
             </div>
             <br />
-            <div className="typewriter delay">
-              Full Stack Developer
+            <div className="typewriter-container">
+              <span className="typewriter delay">Full Stack Developer</span>
             </div>
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
