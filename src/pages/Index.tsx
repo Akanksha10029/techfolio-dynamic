@@ -23,12 +23,24 @@ const Index = () => {
   const navigate = useNavigate();
   const { session } = useAuth();
 
+  // Clear localStorage on page refresh
   useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('hasSeenWelcome');
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    // Check and show welcome message
     const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
     if (!hasSeenWelcome) {
       setShowAdminCheck(true);
       localStorage.setItem('hasSeenWelcome', 'true');
     }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   useEffect(() => {
