@@ -19,16 +19,48 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
+  let inactivityTimeout: NodeJS.Timeout;
+
+  const resetInactivityTimer = () => {
+    if (inactivityTimeout) clearTimeout(inactivityTimeout);
+    if (session) {
+      inactivityTimeout = setTimeout(async () => {
+        await signOut();
+      }, 30 * 60 * 1000); // 30 minutes
+    }
+  };
+
+  useEffect(() => {
+    // Activity listeners
+    const handleActivity = () => {
+      resetInactivityTimer();
+    };
+
+    window.addEventListener('mousemove', handleActivity);
+    window.addEventListener('keydown', handleActivity);
+    window.addEventListener('click', handleActivity);
+    window.addEventListener('scroll', handleActivity);
+
+    return () => {
+      window.removeEventListener('mousemove', handleActivity);
+      window.removeEventListener('keydown', handleActivity);
+      window.removeEventListener('click', handleActivity);
+      window.removeEventListener('scroll', handleActivity);
+      if (inactivityTimeout) clearTimeout(inactivityTimeout);
+    };
+  }, [session]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session) resetInactivityTimer();
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session) resetInactivityTimer();
     });
 
     return () => subscription.unsubscribe();

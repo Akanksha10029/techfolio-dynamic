@@ -22,15 +22,8 @@ const Index = () => {
   const navigate = useNavigate();
   const { session } = useAuth();
 
-  // Clear localStorage on page refresh
   useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.removeItem('hasSeenWelcome');
-    };
-    
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    // Check and show welcome message only if user is not logged in
+    // Only show welcome message if user is not logged in and hasn't seen it before
     if (!session) {
       const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
       if (!hasSeenWelcome) {
@@ -38,10 +31,6 @@ const Index = () => {
         localStorage.setItem('hasSeenWelcome', 'true');
       }
     }
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
   }, [session]);
 
   useEffect(() => {
