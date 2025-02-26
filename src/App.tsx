@@ -12,23 +12,32 @@ import Projects from "./pages/Projects";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Loader from "./components/Loader";
 
 const PageWrapper = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     const main = document.querySelector('main');
     if (main) {
       main.classList.add('page-enter');
       const timer = setTimeout(() => {
         main.classList.remove('page-enter');
+        setIsLoading(false);
       }, 500);
       return () => clearTimeout(timer);
     }
   }, [location.pathname]);
 
-  return children;
+  return (
+    <>
+      {isLoading && <Loader />}
+      {children}
+    </>
+  );
 };
 
 const App = () => (
