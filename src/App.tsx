@@ -17,19 +17,22 @@ import Loader from "./components/Loader";
 
 const PageWrapper = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
     setIsLoading(true);
     const main = document.querySelector('main');
     if (main) {
       main.classList.add('page-enter');
-      const timer = setTimeout(() => {
+      timeoutId = setTimeout(() => {
         main.classList.remove('page-enter');
         setIsLoading(false);
-      }, 500);
-      return () => clearTimeout(timer);
+      }, 300); // Reduced from 500ms to 300ms for smoother transitions
     }
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [location.pathname]);
 
   return (
