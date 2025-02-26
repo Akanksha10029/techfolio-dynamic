@@ -105,8 +105,8 @@ const Index = () => {
               <span className="typewriter">Hi, I'm <span className="text-primary">Akanksha Rani</span></span>
             </div>
             <br />
-            <div className="typewriter-container">
-              <span className="typewriter delay">Full Stack Developer</span>
+            <div>
+              <span>Full Stack Developer</span>
             </div>
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
