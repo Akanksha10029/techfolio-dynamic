@@ -1,3 +1,4 @@
+
 import { ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -90,13 +91,13 @@ const Index = () => {
         <div className="flex min-h-[70vh] items-center justify-center">
           <div className="space-y-6 text-center">
             <h1 className="space-y-2 text-4xl font-bold leading-tight md:text-6xl lg:text-7xl">
-            <div className="typewriter-container">
-              <span className="typewriter">Hi, I'm <span className="text-primary">Akanksha Rani</span></span>
-            </div>
-            <br />
-            <div>
-              <span>Full Stack Developer</span>
-            </div>
+              <div className="typewriter-container">
+                <span className="typewriter">Hi, I'm <span className="text-primary">Akanksha Rani</span></span>
+              </div>
+              <br />
+              <div className="mt-4">
+                <span className="text-foreground">Full Stack Developer</span>
+              </div>
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
               I craft beautiful, functional websites and applications using modern technologies.
