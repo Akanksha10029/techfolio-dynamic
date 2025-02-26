@@ -18,26 +18,40 @@ import Loader from "./components/Loader";
 const PageWrapper = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const [shouldShowLoader, setShouldShowLoader] = useState(false);
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let loaderTimeout: NodeJS.Timeout;
+    let transitionTimeout: NodeJS.Timeout;
+
     setIsLoading(true);
+    
+    // Only show loader if loading takes more than 3 seconds
+    loaderTimeout = setTimeout(() => {
+      if (isLoading) {
+        setShouldShowLoader(true);
+      }
+    }, 3000);
+
     const main = document.querySelector('main');
     if (main) {
       main.classList.add('page-enter');
-      timeoutId = setTimeout(() => {
+      transitionTimeout = setTimeout(() => {
         main.classList.remove('page-enter');
         setIsLoading(false);
-      }, 300); // Reduced from 500ms to 300ms for smoother transitions
+        setShouldShowLoader(false);
+      }, 300);
     }
+
     return () => {
-      if (timeoutId) clearTimeout(timeoutId);
+      clearTimeout(loaderTimeout);
+      clearTimeout(transitionTimeout);
     };
   }, [location.pathname]);
 
   return (
     <>
-      {isLoading && <Loader />}
+      {shouldShowLoader && isLoading && <Loader />}
       {children}
     </>
   );
