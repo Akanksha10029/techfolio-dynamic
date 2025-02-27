@@ -19,19 +19,28 @@ const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
+      console.log("Submitting form data:", formData);
+      
       // We need to cast the entire Supabase client to any to bypass TypeScript errors
       // This is because the types haven't been updated to include our new table
-      const { error } = await (supabase as any)
+      const response = await (supabase as any)
         .from('contact_messages')
         .insert([formData]);
+        
+      console.log("Supabase response:", response);
 
-      if (error) throw error;
+      if (response.error) {
+        console.error("Supabase error details:", response.error);
+        throw response.error;
+      }
 
       toast.success("Message sent successfully!");
       setFormData({ name: "", email: "", message: "" });
     } catch (error: any) {
       console.error('Error sending message:', error);
-      toast.error("Failed to send message. Please try again.");
+      // Show more detailed error message if available
+      const errorMessage = error.message || error.details || "Failed to send message. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
