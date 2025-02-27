@@ -19,10 +19,11 @@ const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Use generic typing to bypass TypeScript errors until the types are updated
-      const { error } = await supabase
+      // We need to cast the entire Supabase client to any to bypass TypeScript errors
+      // This is because the types haven't been updated to include our new table
+      const { error } = await (supabase as any)
         .from('contact_messages')
-        .insert([formData]) as any;
+        .insert([formData]);
 
       if (error) throw error;
 
