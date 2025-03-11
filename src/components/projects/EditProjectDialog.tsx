@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Project } from "../ProjectCard";
+import { Project } from "@/types/project";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -14,6 +13,7 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 import { toast } from "sonner";
+import { processTechnologiesArray } from "@/utils/projectUtils";
 
 interface EditProjectDialogProps {
   project: Project;
@@ -49,15 +49,8 @@ const EditProjectDialog = ({ project, onUpdateProject, onCancel }: EditProjectDi
 
     setIsUploading(true);
     try {
-      // Process technologies based on its type
-      let processedTechnologies: string[] = [];
-      const techValue = editedProject.technologies;
-      
-      if (Array.isArray(techValue)) {
-        processedTechnologies = techValue;
-      } else if (typeof techValue === 'string') {
-        processedTechnologies = techValue.split(',').map(tech => tech.trim());
-      }
+      // Process technologies using the utility function
+      const processedTechnologies = processTechnologiesArray(editedProject.technologies);
       
       await onUpdateProject(
         {

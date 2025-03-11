@@ -1,55 +1,27 @@
 
 import { useState, useEffect } from 'react';
-import { Project } from '@/components/ProjectCard';
-import { supabase } from '@/lib/supabase';
+import { Project } from '@/types/project';
 import { toast } from 'sonner';
+import { 
+  fetchProjects as fetchProjectsService,
+  addProject as addProjectService,
+  updateProject as updateProjectService,
+  deleteProject as deleteProjectService,
+  toggleProjectFeature as toggleProjectFeatureService
+} from '@/services/projectService';
+import { processTechnologiesArray } from '@/utils/projectUtils';
 
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
 
   const fetchProjects = async () => {
     try {
-      const { data, error } = await supabase
-        .from('porfolio projects')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      const formattedProjects = data.map(project => ({
-        id: String(project.id),
-        title: project.description || "",  // Use description as title since there's no title field
-        description: project.description || "",
-        technologies: project["technologies used"] ? project["technologies used"].split(',').map(tech => tech.trim()) : [],
-        imageUrl: project.image_url || "/placeholder.svg",
-        link: project["github link"] || "",
-        featured: project.featured || false
-      }));
-
-      setProjects(formattedProjects);
+      const data = await fetchProjectsService();
+      setProjects(data);
     } catch (error) {
       console.error('Error fetching projects:', error);
       toast.error('Failed to load projects');
     }
-  };
-
-  const uploadImage = async (file: File): Promise<string> => {
-    const fileExt = file.name.split('.').pop();
-    const filePath = `${crypto.randomUUID()}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('project-images')
-      .upload(filePath, file);
-
-    if (uploadError) {
-      throw uploadError;
-    }
-
-    const { data } = supabase.storage
-      .from('project-images')
-      .getPublicUrl(filePath);
-
-    return data.publicUrl;
   };
 
   const addProject = async (
@@ -57,50 +29,8 @@ export const useProjects = () => {
     image: File | null
   ) => {
     try {
-      let imageUrl = "/placeholder.svg";
-      
-      if (image) {
-        imageUrl = await uploadImage(image);
-      }
-
-      // Process technologies based on its type to ensure we're always saving a string
-      const technologiesString = Array.isArray(projectData.technologies) 
-        ? projectData.technologies.join(',') 
-        : typeof projectData.technologies === 'string'
-          ? projectData.technologies
-          : "";
-
-      const { data, error } = await supabase
-        .from('porfolio projects')
-        .insert([
-          {
-            description: projectData.description, // Use description for both title and description
-            "technologies used": technologiesString,
-            "github link": projectData.link,
-            image_url: imageUrl,
-            featured: false
-          }
-        ])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      if (data) {
-        setProjects([
-          {
-            id: String(data.id),
-            title: data.description || "",  // Use description as title
-            description: data.description || "",
-            technologies: data["technologies used"] ? data["technologies used"].split(',').map(tech => tech.trim()) : [],
-            imageUrl: data.image_url || "/placeholder.svg",
-            link: data["github link"] || "",
-            featured: data.featured || false
-          },
-          ...projects
-        ]);
-      }
-
+      const newProject = await addProjectService(projectData, image);
+      setProjects([newProject, ...projects]);
       toast.success("Project added successfully!");
     } catch (error) {
       console.error('Error adding project:', error);
@@ -114,47 +44,16 @@ export const useProjects = () => {
     image: File | null
   ) => {
     try {
-      let imageUrl = projectData.imageUrl;
+      await updateProjectService(projectData, image);
       
-      if (image) {
-        imageUrl = await uploadImage(image);
-      }
-
-      // Process technologies based on its type to ensure we're always saving a string
-      let technologiesString = '';
-      const techValue = projectData.technologies;
-      
-      if (Array.isArray(techValue)) {
-        technologiesString = techValue.join(',');
-      } else if (typeof techValue === 'string') {
-        technologiesString = techValue;
-      }
-
-      const { error } = await supabase
-        .from('porfolio projects')
-        .update({
-          description: projectData.description,
-          "technologies used": technologiesString,
-          "github link": projectData.link,
-          image_url: imageUrl
-        })
-        .eq('id', parseInt(projectData.id));
-
-      if (error) throw error;
-
       // Process technologies for the state update
-      let processedTechnologies: string[] = [];
-      if (Array.isArray(techValue)) {
-        processedTechnologies = techValue;
-      } else if (typeof techValue === 'string') {
-        processedTechnologies = techValue.split(',').map(tech => tech.trim());
-      }
+      const processedTechnologies = processTechnologiesArray(projectData.technologies);
 
+      // Update local state
       setProjects(projects.map(project => 
         project.id === projectData.id 
           ? {
               ...projectData,
-              imageUrl: imageUrl,
               technologies: processedTechnologies
             } 
           : project
@@ -170,13 +69,7 @@ export const useProjects = () => {
 
   const deleteProject = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('porfolio projects')
-        .delete()
-        .eq('id', parseInt(id));
-
-      if (error) throw error;
-
+      await deleteProjectService(id);
       setProjects(projects.filter((project) => project.id !== id));
       toast.success("Project deleted successfully!");
     } catch (error) {
@@ -187,19 +80,8 @@ export const useProjects = () => {
 
   const toggleProjectFeature = async (projectId: string, featured: boolean) => {
     try {
-      const { error } = await supabase
-        .from('porfolio projects')
-        .update({ featured })
-        .eq('id', parseInt(projectId));
-
-      if (error) {
-        if (error.message.includes('Cannot feature more than 3 projects')) {
-          toast.error('You can only feature up to 3 projects');
-          return;
-        }
-        throw error;
-      }
-
+      await toggleProjectFeatureService(projectId, featured);
+      
       setProjects(projects.map(project => 
         project.id === projectId ? { ...project, featured } : project
       ));
@@ -208,6 +90,10 @@ export const useProjects = () => {
         featured ? "Project added to featured" : "Project removed from featured"
       );
     } catch (error) {
+      if (error instanceof Error && error.message.includes('You can only feature up to 3 projects')) {
+        toast.error('You can only feature up to 3 projects');
+        return;
+      }
       console.error('Error updating project:', error);
       toast.error('Failed to update project');
     }
