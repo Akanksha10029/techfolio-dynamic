@@ -58,7 +58,7 @@ const Projects = () => {
 
       const formattedProjects = data.map(project => ({
         id: String(project.id),
-        title: project.description || "",
+        title: project.title || "",
         description: project.description || "",
         technologies: project["technologies used"] ? project["technologies used"].split(',') : [],
         imageUrl: project.image_url || "/placeholder.svg",
