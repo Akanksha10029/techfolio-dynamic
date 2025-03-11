@@ -1,13 +1,25 @@
 
-import ProjectCard from "@/components/ProjectCard";
+import { useState } from "react";
+import ProjectCard, { Project } from "@/components/ProjectCard";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProjects } from "@/hooks/useProjects";
 import AddProjectDialog from "@/components/projects/AddProjectDialog";
 import DeleteProjectDialog from "@/components/projects/DeleteProjectDialog";
+import EditProjectDialog from "@/components/projects/EditProjectDialog";
 
 const Projects = () => {
   const { session } = useAuth();
-  const { projects, addProject, deleteProject, toggleProjectFeature } = useProjects();
+  const { projects, addProject, deleteProject, toggleProjectFeature, updateProject } = useProjects();
+  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
+
+  const handleEditProject = (project: Project) => {
+    setProjectToEdit(project);
+  };
+
+  const handleUpdateProject = async (updatedProject: Project, image: File | null) => {
+    await updateProject(updatedProject, image);
+    setProjectToEdit(null);
+  };
 
   return (
     <div className="min-h-screen animate-fadeIn p-6 pt-20 lg:p-20">
@@ -21,6 +33,7 @@ const Projects = () => {
             <ProjectCard 
               project={project} 
               onToggleFeature={session ? toggleProjectFeature : undefined}
+              onEdit={session ? handleEditProject : undefined}
             />
             {session && (
               <DeleteProjectDialog 
@@ -30,6 +43,14 @@ const Projects = () => {
           </div>
         ))}
       </div>
+      
+      {projectToEdit && (
+        <EditProjectDialog
+          project={projectToEdit}
+          onUpdateProject={handleUpdateProject}
+          onCancel={() => setProjectToEdit(null)}
+        />
+      )}
     </div>
   );
 };

@@ -18,7 +18,7 @@ export const useProjects = () => {
 
       const formattedProjects = data.map(project => ({
         id: String(project.id),
-        title: project.description || "",
+        title: project.title || project.description || "",
         description: project.description || "",
         technologies: project["technologies used"] ? project["technologies used"].split(',') : [],
         imageUrl: project.image_url || "/placeholder.svg",
@@ -67,6 +67,7 @@ export const useProjects = () => {
         .from('porfolio projects')
         .insert([
           {
+            title: projectData.title,
             description: projectData.description,
             "technologies used": projectData.technologies.join(','),
             "github link": projectData.link,
@@ -83,7 +84,7 @@ export const useProjects = () => {
         setProjects([
           {
             id: String(data.id),
-            title: data.description || "",
+            title: data.title || data.description || "",
             description: data.description || "",
             technologies: data["technologies used"] ? data["technologies used"].split(',') : [],
             imageUrl: data.image_url || "/placeholder.svg",
@@ -98,6 +99,52 @@ export const useProjects = () => {
     } catch (error) {
       console.error('Error adding project:', error);
       toast.error('Failed to add project');
+      throw error;
+    }
+  };
+
+  const updateProject = async (
+    projectData: Project,
+    image: File | null
+  ) => {
+    try {
+      let imageUrl = projectData.imageUrl;
+      
+      if (image) {
+        imageUrl = await uploadImage(image);
+      }
+
+      const { error } = await supabase
+        .from('porfolio projects')
+        .update({
+          title: projectData.title,
+          description: projectData.description,
+          "technologies used": Array.isArray(projectData.technologies) 
+            ? projectData.technologies.join(',')
+            : projectData.technologies,
+          "github link": projectData.link,
+          image_url: imageUrl
+        })
+        .eq('id', parseInt(projectData.id));
+
+      if (error) throw error;
+
+      setProjects(projects.map(project => 
+        project.id === projectData.id 
+          ? {
+              ...projectData,
+              imageUrl: imageUrl,
+              technologies: Array.isArray(projectData.technologies) 
+                ? projectData.technologies
+                : projectData.technologies.split(',').map(tech => tech.trim())
+            } 
+          : project
+      ));
+
+      toast.success("Project updated successfully!");
+    } catch (error) {
+      console.error('Error updating project:', error);
+      toast.error('Failed to update project');
       throw error;
     }
   };
@@ -155,6 +202,7 @@ export const useProjects = () => {
     projects,
     addProject,
     deleteProject,
-    toggleProjectFeature
+    toggleProjectFeature,
+    updateProject
   };
 };
