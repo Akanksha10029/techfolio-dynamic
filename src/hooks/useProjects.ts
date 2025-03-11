@@ -63,12 +63,19 @@ export const useProjects = () => {
         imageUrl = await uploadImage(image);
       }
 
+      // Process technologies based on its type to ensure we're always saving a string
+      const technologiesString = Array.isArray(projectData.technologies) 
+        ? projectData.technologies.join(',') 
+        : typeof projectData.technologies === 'string'
+          ? projectData.technologies
+          : "";
+
       const { data, error } = await supabase
         .from('porfolio projects')
         .insert([
           {
             description: projectData.description, // Use description for both title and description
-            "technologies used": Array.isArray(projectData.technologies) ? projectData.technologies.join(',') : "",
+            "technologies used": technologiesString,
             "github link": projectData.link,
             image_url: imageUrl,
             featured: false
@@ -113,15 +120,18 @@ export const useProjects = () => {
         imageUrl = await uploadImage(image);
       }
 
+      // Process technologies based on its type to ensure we're always saving a string
+      const technologiesString = Array.isArray(projectData.technologies) 
+        ? projectData.technologies.join(',') 
+        : typeof projectData.technologies === 'string'
+          ? projectData.technologies
+          : "";
+
       const { error } = await supabase
         .from('porfolio projects')
         .update({
           description: projectData.description, // Save description to database
-          "technologies used": Array.isArray(projectData.technologies) 
-            ? projectData.technologies.join(',')
-            : typeof projectData.technologies === 'string' 
-              ? projectData.technologies
-              : "",
+          "technologies used": technologiesString,
           "github link": projectData.link,
           image_url: imageUrl
         })
@@ -129,16 +139,19 @@ export const useProjects = () => {
 
       if (error) throw error;
 
+      // Process technologies for the state update
+      const processedTechnologies = Array.isArray(projectData.technologies) 
+        ? projectData.technologies
+        : typeof projectData.technologies === 'string'
+          ? projectData.technologies.split(',').map(tech => tech.trim())
+          : [];
+
       setProjects(projects.map(project => 
         project.id === projectData.id 
           ? {
               ...projectData,
               imageUrl: imageUrl,
-              technologies: Array.isArray(projectData.technologies) 
-                ? projectData.technologies
-                : typeof projectData.technologies === 'string'
-                  ? projectData.technologies.split(',').map(tech => tech.trim())
-                  : []
+              technologies: processedTechnologies
             } 
           : project
       ));

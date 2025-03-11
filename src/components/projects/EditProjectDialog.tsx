@@ -49,14 +49,18 @@ const EditProjectDialog = ({ project, onUpdateProject, onCancel }: EditProjectDi
 
     setIsUploading(true);
     try {
+      // Process technologies based on its type
+      const processedTechnologies = 
+        typeof editedProject.technologies === 'string'
+          ? editedProject.technologies.split(',').map(tech => tech.trim())
+          : Array.isArray(editedProject.technologies)
+            ? editedProject.technologies
+            : [];
+      
       await onUpdateProject(
         {
           ...editedProject,
-          technologies: typeof editedProject.technologies === 'string' 
-            ? editedProject.technologies.split(',').map(tech => tech.trim())
-            : Array.isArray(editedProject.technologies) 
-              ? editedProject.technologies
-              : []
+          technologies: processedTechnologies
         },
         selectedImage
       );
@@ -67,6 +71,17 @@ const EditProjectDialog = ({ project, onUpdateProject, onCancel }: EditProjectDi
     } finally {
       setIsUploading(false);
     }
+  };
+
+  // Helper function to get a string representation of technologies for the input field
+  const getTechnologiesString = (): string => {
+    if (Array.isArray(editedProject.technologies)) {
+      return editedProject.technologies.join(', ');
+    }
+    if (typeof editedProject.technologies === 'string') {
+      return editedProject.technologies;
+    }
+    return '';
   };
 
   return (
@@ -96,11 +111,7 @@ const EditProjectDialog = ({ project, onUpdateProject, onCancel }: EditProjectDi
             <Input
               placeholder="Technologies (comma-separated)"
               name="technologies"
-              value={Array.isArray(editedProject.technologies) 
-                ? editedProject.technologies.join(', ') 
-                : typeof editedProject.technologies === 'string'
-                ? editedProject.technologies
-                : ''}
+              value={getTechnologiesString()}
               onChange={handleInputChange}
             />
           </div>
