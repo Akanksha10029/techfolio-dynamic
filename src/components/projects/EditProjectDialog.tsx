@@ -50,12 +50,14 @@ const EditProjectDialog = ({ project, onUpdateProject, onCancel }: EditProjectDi
     setIsUploading(true);
     try {
       // Process technologies based on its type
-      const processedTechnologies = 
-        typeof editedProject.technologies === 'string'
-          ? editedProject.technologies.split(',').map(tech => tech.trim())
-          : Array.isArray(editedProject.technologies)
-            ? editedProject.technologies
-            : [];
+      let processedTechnologies: string[] = [];
+      const techValue = editedProject.technologies;
+      
+      if (Array.isArray(techValue)) {
+        processedTechnologies = techValue;
+      } else if (typeof techValue === 'string') {
+        processedTechnologies = techValue.split(',').map(tech => tech.trim());
+      }
       
       await onUpdateProject(
         {
@@ -75,11 +77,12 @@ const EditProjectDialog = ({ project, onUpdateProject, onCancel }: EditProjectDi
 
   // Helper function to get a string representation of technologies for the input field
   const getTechnologiesString = (): string => {
-    if (Array.isArray(editedProject.technologies)) {
-      return editedProject.technologies.join(', ');
+    const techValue = editedProject.technologies;
+    if (Array.isArray(techValue)) {
+      return techValue.join(', ');
     }
-    if (typeof editedProject.technologies === 'string') {
-      return editedProject.technologies;
+    if (typeof techValue === 'string') {
+      return techValue;
     }
     return '';
   };

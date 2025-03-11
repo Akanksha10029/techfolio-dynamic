@@ -121,16 +121,19 @@ export const useProjects = () => {
       }
 
       // Process technologies based on its type to ensure we're always saving a string
-      const technologiesString = Array.isArray(projectData.technologies) 
-        ? projectData.technologies.join(',') 
-        : typeof projectData.technologies === 'string'
-          ? projectData.technologies
-          : "";
+      let technologiesString = '';
+      const techValue = projectData.technologies;
+      
+      if (Array.isArray(techValue)) {
+        technologiesString = techValue.join(',');
+      } else if (typeof techValue === 'string') {
+        technologiesString = techValue;
+      }
 
       const { error } = await supabase
         .from('porfolio projects')
         .update({
-          description: projectData.description, // Save description to database
+          description: projectData.description,
           "technologies used": technologiesString,
           "github link": projectData.link,
           image_url: imageUrl
@@ -140,11 +143,12 @@ export const useProjects = () => {
       if (error) throw error;
 
       // Process technologies for the state update
-      const processedTechnologies = Array.isArray(projectData.technologies) 
-        ? projectData.technologies
-        : typeof projectData.technologies === 'string'
-          ? projectData.technologies.split(',').map(tech => tech.trim())
-          : [];
+      let processedTechnologies: string[] = [];
+      if (Array.isArray(techValue)) {
+        processedTechnologies = techValue;
+      } else if (typeof techValue === 'string') {
+        processedTechnologies = techValue.split(',').map(tech => tech.trim());
+      }
 
       setProjects(projects.map(project => 
         project.id === projectData.id 
