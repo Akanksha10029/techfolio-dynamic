@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import { Github, Star, Pencil } from "lucide-react";
+import { Github, Star } from "lucide-react";
 
 export interface Project {
   id: string;
@@ -17,10 +17,9 @@ export interface Project {
 interface ProjectCardProps {
   project: Project;
   onToggleFeature?: (projectId: string, featured: boolean) => Promise<void>;
-  onEdit?: (project: Project) => void;
 }
 
-const ProjectCard = ({ project, onToggleFeature, onEdit }: ProjectCardProps) => {
+const ProjectCard = ({ project, onToggleFeature }: ProjectCardProps) => {
   return (
     <Card className="glass-card group h-full overflow-hidden transition-all duration-300 hover:scale-105">
       <CardHeader className="p-0">
@@ -55,28 +54,17 @@ const ProjectCard = ({ project, onToggleFeature, onEdit }: ProjectCardProps) => 
               </Badge>
             ))}
           </div>
-          <div className="flex gap-2">
-            {project.link && (
-              <Button
-                variant="secondary"
-                size="sm"
-                className="flex-1"
-                onClick={() => window.open(project.link, "_blank")}
-              >
-                <Github className="mr-2 h-4 w-4" />
-                View on GitHub
-              </Button>
-            )}
-            {onEdit && (
-              <Button
-                variant="secondary"
-                size="icon"
-                onClick={() => onEdit(project)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
+          {project.link && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="w-full"
+              onClick={() => window.open(project.link, "_blank")}
+            >
+              <Github className="mr-2 h-4 w-4" />
+              View on GitHub
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

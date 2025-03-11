@@ -1,6 +1,5 @@
 
 # 🚀 Dynamic Tech Portfolio
-## Link to view portfolio: https://techfolio-dynamic.lovable.app/
 
 ## Welcome to my interactive portfolio platform!
 
