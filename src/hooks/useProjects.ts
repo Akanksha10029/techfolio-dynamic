@@ -18,9 +18,9 @@ export const useProjects = () => {
 
       const formattedProjects = data.map(project => ({
         id: String(project.id),
-        title: project.title || project.description || "",
+        title: project.description || "",  // Use description as title since there's no title field
         description: project.description || "",
-        technologies: project["technologies used"] ? project["technologies used"].split(',') : [],
+        technologies: project["technologies used"] ? project["technologies used"].split(',').map(tech => tech.trim()) : [],
         imageUrl: project.image_url || "/placeholder.svg",
         link: project["github link"] || "",
         featured: project.featured || false
@@ -67,9 +67,8 @@ export const useProjects = () => {
         .from('porfolio projects')
         .insert([
           {
-            title: projectData.title,
-            description: projectData.description,
-            "technologies used": projectData.technologies.join(','),
+            description: projectData.description, // Use description for both title and description
+            "technologies used": Array.isArray(projectData.technologies) ? projectData.technologies.join(',') : "",
             "github link": projectData.link,
             image_url: imageUrl,
             featured: false
@@ -84,9 +83,9 @@ export const useProjects = () => {
         setProjects([
           {
             id: String(data.id),
-            title: data.title || data.description || "",
+            title: data.description || "",  // Use description as title
             description: data.description || "",
-            technologies: data["technologies used"] ? data["technologies used"].split(',') : [],
+            technologies: data["technologies used"] ? data["technologies used"].split(',').map(tech => tech.trim()) : [],
             imageUrl: data.image_url || "/placeholder.svg",
             link: data["github link"] || "",
             featured: data.featured || false
@@ -117,11 +116,12 @@ export const useProjects = () => {
       const { error } = await supabase
         .from('porfolio projects')
         .update({
-          title: projectData.title,
-          description: projectData.description,
+          description: projectData.description, // Save description to database
           "technologies used": Array.isArray(projectData.technologies) 
             ? projectData.technologies.join(',')
-            : projectData.technologies,
+            : typeof projectData.technologies === 'string' 
+              ? projectData.technologies
+              : "",
           "github link": projectData.link,
           image_url: imageUrl
         })
@@ -136,7 +136,9 @@ export const useProjects = () => {
               imageUrl: imageUrl,
               technologies: Array.isArray(projectData.technologies) 
                 ? projectData.technologies
-                : projectData.technologies.split(',').map(tech => tech.trim())
+                : typeof projectData.technologies === 'string'
+                  ? projectData.technologies.split(',').map(tech => tech.trim())
+                  : []
             } 
           : project
       ));

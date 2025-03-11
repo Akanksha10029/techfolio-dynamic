@@ -54,7 +54,9 @@ const EditProjectDialog = ({ project, onUpdateProject, onCancel }: EditProjectDi
           ...editedProject,
           technologies: typeof editedProject.technologies === 'string' 
             ? editedProject.technologies.split(',').map(tech => tech.trim())
-            : editedProject.technologies,
+            : Array.isArray(editedProject.technologies) 
+              ? editedProject.technologies
+              : []
         },
         selectedImage
       );
@@ -96,7 +98,9 @@ const EditProjectDialog = ({ project, onUpdateProject, onCancel }: EditProjectDi
               name="technologies"
               value={Array.isArray(editedProject.technologies) 
                 ? editedProject.technologies.join(', ') 
-                : editedProject.technologies}
+                : typeof editedProject.technologies === 'string'
+                ? editedProject.technologies
+                : ''}
               onChange={handleInputChange}
             />
           </div>
