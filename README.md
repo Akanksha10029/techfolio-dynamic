@@ -5,6 +5,8 @@
 
 This modern, reactive portfolio site showcases my projects and skills using cutting-edge web technologies. Built with a tech enthusiast's mindset, this platform provides both a sleek user experience and a robust admin interface for easy content management.
 
+## View my portfolio: https://preview--techfolio-dynamic.lovable.app/
+
 ## ✨ Features
 
 - **Dynamic Project Showcase** - Feature up to three spotlight projects on the home page
