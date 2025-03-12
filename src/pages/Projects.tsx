@@ -361,12 +361,19 @@ const Projects = () => {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <div key={project.id} className="group relative">
-            <ProjectCard 
-              project={project} 
-              onToggleFeature={session ? handleToggleFeature : undefined}
-            />
+            <ProjectCard project={project} />
             {session && (
               <div className="absolute right-2 top-2 z-10 flex space-x-2">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100"
+                  onClick={() => handleToggleFeature(project.id, !project.featured)}
+                >
+                  <Star
+                    className={`h-4 w-4 ${project.featured ? "fill-yellow-400 text-yellow-400" : ""}`}
+                  />
+                </Button>
                 <Button
                   variant="secondary"
                   size="icon"

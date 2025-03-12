@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import { Github, Star } from "lucide-react";
+import { Github } from "lucide-react";
 
 export interface Project {
   id: string;
@@ -19,7 +19,7 @@ interface ProjectCardProps {
   onToggleFeature?: (projectId: string, featured: boolean) => Promise<void>;
 }
 
-const ProjectCard = ({ project, onToggleFeature }: ProjectCardProps) => {
+const ProjectCard = ({ project }: ProjectCardProps) => {
   return (
     <Card className="glass-card group h-full overflow-hidden transition-all duration-300 hover:scale-105">
       <CardHeader className="p-0">
@@ -29,21 +29,7 @@ const ProjectCard = ({ project, onToggleFeature }: ProjectCardProps) => {
             alt={project.title}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
           />
-          <div className="absolute left-0 right-0 top-2 flex justify-between px-2 z-10">
-            {onToggleFeature && (
-              <Button
-                variant="secondary"
-                size="icon"
-                className="scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100"
-                onClick={() => onToggleFeature(project.id, !project.featured)}
-              >
-                <Star
-                  className={`h-4 w-4 ${project.featured ? "fill-yellow-400 text-yellow-400" : ""}`}
-                />
-              </Button>
-            )}
-            {/* The edit and delete buttons will be inserted here by the parent component */}
-          </div>
+          {/* Admin action buttons will be added by the parent component */}
         </div>
       </CardHeader>
       <CardContent className="flex h-[calc(100%-12rem)] min-h-[16rem] flex-col p-6">
