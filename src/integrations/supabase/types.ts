@@ -42,6 +42,7 @@ export type Database = {
           id: number
           image_url: string | null
           "technologies used": string | null
+          title: string | null
         }
         Insert: {
           created_at?: string
@@ -51,6 +52,7 @@ export type Database = {
           id?: number
           image_url?: string | null
           "technologies used"?: string | null
+          title?: string | null
         }
         Update: {
           created_at?: string
@@ -60,6 +62,7 @@ export type Database = {
           id?: number
           image_url?: string | null
           "technologies used"?: string | null
+          title?: string | null
         }
         Relationships: []
       }

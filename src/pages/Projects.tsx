@@ -153,6 +153,7 @@ const Projects = () => {
         .from('porfolio projects')
         .insert([
           {
+            title: newProject.title,
             description: newProject.description,
             "technologies used": newProject.technologies,
             "github link": newProject.link,
@@ -169,7 +170,7 @@ const Projects = () => {
         setProjects([
           {
             id: String(data.id),
-            title: data.description || "",
+            title: data.title || "",
             description: data.description || "",
             technologies: data["technologies used"] ? data["technologies used"].split(',') : [],
             imageUrl: data.image_url || "/placeholder.svg",

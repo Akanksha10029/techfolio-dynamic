@@ -1,4 +1,3 @@
-
 import { ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -45,7 +44,7 @@ const Index = () => {
       if (!error && data) {
         const formattedProjects = data.map(project => ({
           id: String(project.id),
-          title: project.description || "",
+          title: project.title || "",
           description: project.description || "",
           technologies: project["technologies used"] ? project["technologies used"].split(',') : [],
           imageUrl: project.image_url || "/placeholder.svg",
