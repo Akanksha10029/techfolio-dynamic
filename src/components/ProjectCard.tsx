@@ -42,7 +42,7 @@ const ProjectCard = ({ project, onToggleFeature }: ProjectCardProps) => {
                 />
               </Button>
             )}
-            {/* The delete button will be inserted here by the parent component */}
+            {/* The edit and delete buttons will be inserted here by the parent component */}
           </div>
         </div>
       </CardHeader>

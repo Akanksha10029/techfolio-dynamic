@@ -1,7 +1,8 @@
+
 import ProjectCard, { Project } from "@/components/ProjectCard";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Trash2, Upload } from "lucide-react";
+import { PlusCircle, Trash2, Upload, Pencil } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -38,8 +39,10 @@ const Projects = () => {
     link: "",
     imageUrl: "/placeholder.svg",
   });
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -104,10 +107,17 @@ const Projects = () => {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setNewProject({
-      ...newProject,
-      [e.target.name]: e.target.value,
-    });
+    if (editingProject) {
+      setEditingProject({
+        ...editingProject,
+        [e.target.name]: e.target.value,
+      });
+    } else {
+      setNewProject({
+        ...newProject,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -193,6 +203,58 @@ const Projects = () => {
     } catch (error) {
       console.error('Error adding project:', error);
       toast.error('Failed to add project');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleEdit = (project: Project) => {
+    setEditingProject(project);
+    setIsEditDialogOpen(true);
+  };
+
+  const updateProject = async () => {
+    if (!editingProject) return;
+    
+    if (!editingProject.title || !editingProject.description) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      let imageUrl = editingProject.imageUrl;
+      
+      if (selectedImage) {
+        imageUrl = await uploadImage(selectedImage);
+      }
+
+      const { error } = await supabase
+        .from('porfolio projects')
+        .update({
+          title: editingProject.title,
+          description: editingProject.description,
+          "technologies used": editingProject.technologies.join(','),
+          "github link": editingProject.link,
+          image_url: imageUrl
+        })
+        .eq('id', parseInt(editingProject.id));
+
+      if (error) throw error;
+
+      setProjects(projects.map(project => 
+        project.id === editingProject.id 
+          ? { ...editingProject, imageUrl } 
+          : project
+      ));
+
+      setEditingProject(null);
+      setSelectedImage(null);
+      setIsEditDialogOpen(false);
+      toast.success("Project updated successfully!");
+    } catch (error) {
+      console.error('Error updating project:', error);
+      toast.error('Failed to update project');
     } finally {
       setIsUploading(false);
     }
@@ -304,7 +366,15 @@ const Projects = () => {
               onToggleFeature={session ? handleToggleFeature : undefined}
             />
             {session && (
-              <div className="absolute right-2 top-2 z-10">
+              <div className="absolute right-2 top-2 z-10 flex space-x-2">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100"
+                  onClick={() => handleEdit(project)}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
@@ -335,6 +405,95 @@ const Projects = () => {
           </div>
         ))}
       </div>
+
+      {/* Edit Project Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Project</DialogTitle>
+          </DialogHeader>
+          {editingProject && (
+            <div className="space-y-4 py-4">
+              <div>
+                <Input
+                  placeholder="Project Title"
+                  name="title"
+                  value={editingProject.title}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Textarea
+                  placeholder="Project Description"
+                  name="description"
+                  value={editingProject.description}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Input
+                  placeholder="Technologies (comma-separated)"
+                  name="technologies"
+                  value={editingProject.technologies.join(',')}
+                  onChange={(e) => {
+                    setEditingProject({
+                      ...editingProject,
+                      technologies: e.target.value.split(',').map(tech => tech.trim()).filter(Boolean)
+                    });
+                  }}
+                />
+              </div>
+              <div>
+                <Input
+                  placeholder="GitHub Link"
+                  name="link"
+                  value={editingProject.link}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="space-y-2">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="cursor-pointer"
+                />
+                {selectedImage ? (
+                  <p className="text-sm text-muted-foreground">
+                    Selected: {selectedImage.name}
+                  </p>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Current image: {editingProject.imageUrl.split('/').pop()}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setEditingProject(null);
+                setSelectedImage(null);
+                setIsEditDialogOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button onClick={updateProject} disabled={isUploading}>
+              {isUploading ? (
+                <>
+                  <Upload className="mr-2 h-4 w-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                'Update Project'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
