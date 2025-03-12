@@ -2,7 +2,7 @@
 import ProjectCard, { Project } from "@/components/ProjectCard";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Trash2, Upload, Pencil } from "lucide-react";
+import { PlusCircle, Trash2, Upload, Pencil, Star } from "lucide-react";
 import {
   Dialog,
   DialogContent,
