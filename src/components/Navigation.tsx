@@ -78,9 +78,7 @@ const Navigation = () => {
                   Login as Admin
                 </Link>
               </Button>
-              <p className="text-sm text-muted-foreground text-center">
-                © 2024 Portfolio. All rights reserved.
-              </p>
+              <p className="text-sm text-muted-foreground text-center">© 2025 Portfolio. All rights reserved.</p>
             </div>}
         </div>
       </nav>
